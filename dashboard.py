@@ -173,20 +173,20 @@ def install(app_cls):
         self._kpi_labels = []
 
         cards = [
-            ("TODAY'S SALES", "—", "Revenue processed today"),
-            ("TRANSACTIONS", "—", "Completed sales"),
-            ("DEBTORS", "—", "Outstanding customer accounts"),
-            ("LOW STOCK", "—", "Items needing attention"),
+            ("💰 TODAY'S SALES", "—", "Revenue processed today", "#059669"),
+            ("🧾 TRANSACTIONS", "—", "Completed sales tickets", "#2563eb"),
+            ("👥 DEBTORS", "—", "Outstanding customer accounts", "#d97706"),
+            ("📦 LOW STOCK", "—", "Items needing reorder", "#dc2626"),
         ]
-        for i,(title,value,sub) in enumerate(cards):
+        for i, (title, value, sub, col) in enumerate(cards):
             card = tk.Frame(stats, bg="#ffffff", bd=1, relief=tk.SOLID,
                             padx=17, pady=13)
             card.grid(row=0, column=i, sticky="nsew", padx=(0 if i==0 else 7, 0 if i==3 else 7))
             stats.grid_columnconfigure(i, weight=1)
-            tk.Label(card, text=title, font=("Segoe UI", 8, "bold"),
+            tk.Label(card, text=title, font=("Segoe UI", 9, "bold"),
                      bg="#ffffff", fg="#64748b").pack(anchor="w")
-            val=tk.Label(card,text=value,font=("Segoe UI",18,"bold"),
-                         bg="#ffffff",fg="#111827")
+            val=tk.Label(card,text=value,font=("Segoe UI",19,"bold"),
+                         bg="#ffffff",fg=col)
             val.pack(anchor="w", pady=(5,1))
             self._kpi_labels.append(val)
             tk.Label(card,text=sub,font=("Segoe UI",8),
@@ -207,11 +207,15 @@ def install(app_cls):
         quick = tk.Frame(left, bg="#ffffff")
         quick.pack(fill="both", expand=True)
         for c in range(2): quick.grid_columnconfigure(c, weight=1)
-        for r in range(3): quick.grid_rowconfigure(r, weight=1)
+        for r in range(4): quick.grid_rowconfigure(r, weight=1)
 
         items = [
-            ("New Sale", "Open the sales screen", self.show_pos_screen, "#0f7a3d"),
+            ("New Sale", "Open the sales screen", self.show_pos_screen, "#059669"),
             ("Open Invoices", "Resume an open invoice", self.open_invoice_selector, "#2563eb"),
+            ("🤖 AI Copilot (F10)", "Natural language questions",
+             lambda: _open(self, "ai.copilot", "AICopilotWindow"), "#6366f1"),
+            ("🍎 Produce Vision (F4)", "Camera produce & scale scan",
+             lambda: _open(self, "ai.vision_checkout", "ProduceVisionCheckoutWindow"), "#10b981"),
             ("Quotation", "Create or manage quotations",
              lambda: _open(self, "quotation", function_name="open_quotation"), "#7c3aed"),
             ("Customer & Pricing", "Customers and price levels",

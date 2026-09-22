@@ -1,10 +1,10 @@
 {
   "status": "clean_shutdown",
-  "started_at": "2026-09-22T13:52:00+02:00",
-  "pid": 13492,
+  "started_at": "2026-09-22T15:11:25+02:00",
+  "pid": 10308,
   "packaged": false,
-  "previous_status": "unknown",
-  "previous_clean": false,
-  "shutdown_at": "2026-09-22T14:00:36+02:00",
+  "previous_status": "clean_shutdown",
+  "previous_clean": true,
+  "shutdown_at": "2026-09-22T15:15:30+02:00",
   "shutdown_reason": "normal_exit"
 }

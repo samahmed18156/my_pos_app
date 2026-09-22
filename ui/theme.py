@@ -1,6 +1,7 @@
 """BKPOS professional visual theme and UI helpers.
 
 Presentation-only module: no business or database logic.
+Elevated with modern retail fintech styling, crisp contrast, and premium typography.
 """
 from __future__ import annotations
 import tkinter as tk
@@ -8,27 +9,30 @@ from tkinter import ttk
 from core.logger import logger as _bkpos_logger
 
 PALETTE = {
-    "bg": "#f3f6fa",
-    "surface": "#ffffff",
-    "surface_alt": "#f8fafc",
-    "border": "#d9e2ec",
-    "text": "#172033",
-    "muted": "#64748b",
-    "primary": "#1f5fae",
-    "primary_hover": "#174a8b",
-    "success": "#0f8a5f",
-    "success_hover": "#0b6f4c",
-    "danger": "#c63b3b",
-    "danger_hover": "#a72e2e",
-    "warning": "#b7791f",
-    "secondary": "#64748b",
-    "secondary_hover": "#475569",
-    "focus": "#3b82f6",
-    "selected": "#dbeafe",
-    "nav": "#10233f",
-    "nav_alt": "#18365f",
-    "nav_text": "#e8f0fb",
-    "nav_muted": "#9fb2ca",
+    "bg": "#f1f5f9",              # Clean slate-100 canvas
+    "surface": "#ffffff",         # Pure crisp white card surface
+    "surface_alt": "#f8fafc",     # Subtle off-white for table alternates & inputs
+    "border": "#cbd5e1",          # Refined slate-300 border
+    "border_light": "#e2e8f0",    # Soft divider
+    "text": "#0f172a",            # Deep slate-900 high contrast text
+    "muted": "#64748b",           # Slate-500 secondary text
+    "primary": "#1d4ed8",         # Royal blue 700
+    "primary_hover": "#1e40af",   # Deep blue 800
+    "success": "#059669",         # Emerald 600
+    "success_hover": "#047857",   # Emerald 700
+    "danger": "#dc2626",          # Red 600
+    "danger_hover": "#b91c1c",    # Red 700
+    "warning": "#d97706",         # Amber 600
+    "secondary": "#475569",       # Slate 600
+    "secondary_hover": "#334155", # Slate 700
+    "focus": "#2563eb",           # Blue 600 focus ring
+    "selected": "#dbeafe",        # Light blue 100 selection
+    "nav": "#0f172a",             # Obsidian/slate-900 luxury header
+    "nav_alt": "#1e293b",         # Slate-800
+    "nav_text": "#f8fafc",        # Bright white header text
+    "nav_muted": "#94a3b8",       # Slate-400 header subtitle
+    "total_bg": "#0f172a",        # Deep dark card for totals display
+    "total_text": "#10b981",      # Luminous emerald green digital readout
 }
 
 FONT = "Segoe UI"
@@ -39,27 +43,102 @@ def configure_ttk(root):
         style.theme_use("clam")
     except tk.TclError as exc:
         _bkpos_logger.warning("Could not activate the Clam ttk theme", exc_info=exc)
-    style.configure("BK.Treeview", background=PALETTE["surface"], fieldbackground=PALETTE["surface"], foreground=PALETTE["text"], rowheight=36, font=(FONT, 10), borderwidth=0)
-    style.configure("BK.Treeview.Heading", background="#eef3f8", foreground=PALETTE["text"], font=(FONT, 10, "bold"), padding=(10, 10), relief="flat")
-    style.map("BK.Treeview", background=[("selected", PALETTE["selected"])], foreground=[("selected", PALETTE["text"])])
-    style.configure("BK.Horizontal.TProgressbar", troughcolor="#e5ebf2", background=PALETTE["primary"], borderwidth=0, thickness=8)
-    style.configure("BK.TCombobox", fieldbackground=PALETTE["surface"], background=PALETTE["surface"], foreground=PALETTE["text"], padding=6)
+
+    # Modern Premium Treeview
+    style.configure(
+        "BK.Treeview",
+        background=PALETTE["surface"],
+        fieldbackground=PALETTE["surface"],
+        foreground=PALETTE["text"],
+        rowheight=38,
+        font=(FONT, 10),
+        borderwidth=0,
+        relief="flat"
+    )
+    style.configure(
+        "BK.Treeview.Heading",
+        background="#e2e8f0",
+        foreground="#1e293b",
+        font=(FONT, 10, "bold"),
+        padding=(12, 10),
+        relief="flat",
+        borderwidth=0
+    )
+    style.map(
+        "BK.Treeview",
+        background=[("selected", PALETTE["selected"])],
+        foreground=[("selected", PALETTE["primary"])]
+    )
+    style.map(
+        "BK.Treeview.Heading",
+        background=[("active", "#cbd5e1")]
+    )
+
+    style.configure(
+        "BK.Horizontal.TProgressbar",
+        troughcolor="#e2e8f0",
+        background=PALETTE["primary"],
+        borderwidth=0,
+        thickness=10
+    )
+    style.configure(
+        "BK.TCombobox",
+        fieldbackground=PALETTE["surface"],
+        background=PALETTE["surface"],
+        foreground=PALETTE["text"],
+        padding=6,
+        arrowsize=14
+    )
     return style
 
 def button(parent, text, command, kind="primary", **kwargs):
-    colors={"primary":(PALETTE["primary"],PALETTE["primary_hover"],"white"),"success":(PALETTE["success"],PALETTE["success_hover"],"white"),"danger":(PALETTE["danger"],PALETTE["danger_hover"],"white"),"secondary":(PALETTE["secondary"],PALETTE["secondary_hover"],"white")}
-    bg,hover,fg=colors.get(kind,colors["primary"])
-    options={"font":(FONT,10,"bold"),"bg":bg,"fg":fg,"activebackground":hover,"activeforeground":fg,"relief":tk.FLAT,"bd":0,"cursor":"hand2","padx":14,"pady":8,"highlightthickness":0,"takefocus":1}
+    colors = {
+        "primary": (PALETTE["primary"], PALETTE["primary_hover"], "#ffffff"),
+        "success": (PALETTE["success"], PALETTE["success_hover"], "#ffffff"),
+        "danger": (PALETTE["danger"], PALETTE["danger_hover"], "#ffffff"),
+        "secondary": (PALETTE["secondary"], PALETTE["secondary_hover"], "#ffffff"),
+        "warning": (PALETTE["warning"], "#b45309", "#ffffff"),
+        "dark": (PALETTE["nav"], "#1e293b", "#ffffff"),
+    }
+    bg, hover, fg = colors.get(kind, colors["primary"])
+    options = {
+        "font": (FONT, 10, "bold"),
+        "bg": bg,
+        "fg": fg,
+        "activebackground": hover,
+        "activeforeground": fg,
+        "relief": tk.FLAT,
+        "bd": 0,
+        "cursor": "hand2",
+        "padx": 16,
+        "pady": 9,
+        "highlightthickness": 0,
+        "takefocus": 1
+    }
     options.update(kwargs)
-    btn=tk.Button(parent,text=text,command=command,**options)
+    btn = tk.Button(parent, text=text, command=command, **options)
+
     def enter(_):
-        if btn["state"]!="disabled": btn.configure(bg=hover)
-    def leave(_): btn.configure(bg=bg)
-    btn.bind("<Enter>",enter,add="+")
-    btn.bind("<Leave>",leave,add="+")
+        if btn["state"] != "disabled":
+            btn.configure(bg=hover)
+
+    def leave(_):
+        btn.configure(bg=bg)
+
+    btn.bind("<Enter>", enter, add="+")
+    btn.bind("<Leave>", leave, add="+")
     return btn
 
 def entry_options(**kwargs):
-    options={"font":(FONT,12),"bd":1,"relief":tk.SOLID,"highlightthickness":2,"highlightcolor":PALETTE["focus"],"highlightbackground":PALETTE["border"],"insertbackground":PALETTE["text"]}
+    options = {
+        "font": (FONT, 12),
+        "bd": 1,
+        "relief": tk.SOLID,
+        "highlightthickness": 2,
+        "highlightcolor": PALETTE["focus"],
+        "highlightbackground": PALETTE["border"],
+        "insertbackground": PALETTE["text"]
+    }
     options.update(kwargs)
     return options
+

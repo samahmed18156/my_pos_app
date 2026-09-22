@@ -382,11 +382,11 @@ class FamilySupermarketPOS(tk.Tk):
         # the screen on smaller displays.
         totals = tk.Frame(
             entry_panel,
-            bg="#edf2f7",
-            bd=1,
-            relief=tk.SOLID,
-            padx=10,
-            pady=7
+            bg=PALETTE.get("total_bg", "#0f172a"),
+            bd=0,
+            relief=tk.FLAT,
+            padx=12,
+            pady=8
         )
         totals.grid(
             row=0,
@@ -403,21 +403,21 @@ class FamilySupermarketPOS(tk.Tk):
                 totals,
                 text=label,
                 font=("Segoe UI", 11, "bold"),
-                bg="#edf2f7",
-                fg="#4a5568",
+                bg=PALETTE.get("total_bg", "#0f172a"),
+                fg="#94a3b8" if not bold else "#ffffff",
                 anchor="e"
             ).grid(row=r, column=0, sticky="e", padx=(2, 7), pady=3)
 
             lab = tk.Label(
                 totals,
                 text="0.00",
-                font=("Segoe UI", 16 if not bold else 21, "bold"),
-                bg=WHITE,
-                fg=BLUE_TEXT,
+                font=("Segoe UI", 16 if not bold else 22, "bold"),
+                bg="#1e293b",
+                fg="#ffffff" if not bold else PALETTE.get("total_text", "#10b981"),
                 width=11,
                 anchor="e",
-                bd=1,
-                relief=tk.SOLID,
+                bd=0,
+                relief=tk.FLAT,
                 padx=8
             )
             lab.grid(row=r, column=1, sticky="ew", padx=(0, 2), pady=3, ipady=3)
@@ -446,8 +446,8 @@ class FamilySupermarketPOS(tk.Tk):
         # Fixed checkout controls
         controls = tk.Frame(window_frame, bg=WHITE, pady=4)
         controls.pack(fill=tk.X)
-        themed_button(controls, "REMOVE ITEM (Del)", self.delete_selected_item, kind="danger", font=("Segoe UI",10,"bold"), padx=14, pady=8).pack(side=tk.LEFT, padx=(2,5))
-        themed_button(controls, "DONE / PAYMENT  F12", self.checkout, kind="primary", font=("Segoe UI",11,"bold"), padx=24, pady=10).pack(side=tk.RIGHT, padx=2)
+        themed_button(controls, "🗑️ REMOVE ITEM (Del)", self.delete_selected_item, kind="danger", font=("Segoe UI",10,"bold"), padx=14, pady=8).pack(side=tk.LEFT, padx=(2,5))
+        themed_button(controls, "💳 DONE / PAYMENT  F12", self.checkout, kind="success", font=("Segoe UI",12,"bold"), padx=28, pady=10).pack(side=tk.RIGHT, padx=2)
 
         # Draw tabs now that the UI exists
         self.refresh_invoice_tabs()
