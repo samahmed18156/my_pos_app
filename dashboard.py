@@ -11,6 +11,7 @@ import tkinter as tk
 from tkinter import messagebox
 
 from core.config import DB_PATH
+from ui.theme import PALETTE
 DB_NAME = DB_PATH
 
 
@@ -123,23 +124,23 @@ def install(app_cls):
         self._dashboard_frame = frame
 
         # ---------- Premium top bar ----------
-        top = tk.Frame(frame, bg="#111827", height=78)
+        top = tk.Frame(frame, bg=PALETTE["nav"], height=70)
         top.pack(fill="x")
         top.pack_propagate(False)
 
-        brand = tk.Frame(top, bg="#111827")
+        brand = tk.Frame(top, bg=PALETTE["nav"])
         brand.pack(side="left", padx=26)
         tk.Label(brand, text="BKPOS", font=("Segoe UI", 20, "bold"),
-                 bg="#111827", fg="white").pack(anchor="w")
+                 bg=PALETTE["nav"], fg="white").pack(anchor="w")
         tk.Label(brand, text="POINT OF SALE  /  CONTROL CENTRE",
-                 font=("Segoe UI", 7, "bold"), bg="#111827", fg="#94a3b8").pack(anchor="w")
+                 font=("Segoe UI", 7, "bold"), bg=PALETTE["nav"], fg=PALETTE["nav_muted"]).pack(anchor="w")
 
-        right = tk.Frame(top, bg="#111827")
+        right = tk.Frame(top, bg=PALETTE["nav"])
         right.pack(side="right", padx=24)
         tk.Label(right, text=f"{self.cashier_name}  •  {self.cashier_role}",
-                 font=("Segoe UI", 9, "bold"), bg="#111827", fg="white").pack(anchor="e")
+                 font=("Segoe UI", 9, "bold"), bg=PALETTE["nav"], fg="white").pack(anchor="e")
         self._dash_date = tk.Label(right, text="", font=("Segoe UI", 8),
-                                   bg="#111827", fg="#94a3b8")
+                                   bg=PALETTE["nav"], fg=PALETTE["nav_muted"])
         self._dash_date.pack(anchor="e", pady=(4,0))
 
         # ---------- Body ----------
@@ -180,17 +181,21 @@ def install(app_cls):
         ]
         for i, (title, value, sub, col) in enumerate(cards):
             card = tk.Frame(stats, bg="#ffffff", bd=1, relief=tk.SOLID,
-                            padx=17, pady=13)
+                            padx=17, pady=13, cursor="hand2")
             card.grid(row=0, column=i, sticky="nsew", padx=(0 if i==0 else 7, 0 if i==3 else 7))
             stats.grid_columnconfigure(i, weight=1)
             tk.Label(card, text=title, font=("Segoe UI", 9, "bold"),
-                     bg="#ffffff", fg="#64748b").pack(anchor="w")
+                     bg="#ffffff", fg="#64748b", cursor="hand2").pack(anchor="w")
             val=tk.Label(card,text=value,font=("Segoe UI",19,"bold"),
-                         bg="#ffffff",fg=col)
+                         bg="#ffffff",fg=col, cursor="hand2")
             val.pack(anchor="w", pady=(5,1))
             self._kpi_labels.append(val)
             tk.Label(card,text=sub,font=("Segoe UI",8),
-                     bg="#ffffff",fg="#94a3b8").pack(anchor="w")
+                     bg="#ffffff",fg="#94a3b8", cursor="hand2").pack(anchor="w")
+            # Clicking KPI card opens real-time analytics
+            card.bind("<Button-1>", lambda e: _open(self, "ai.dashboard_charts", "AnalyticsChartsWindow"))
+            for child in card.winfo_children():
+                child.bind("<Button-1>", lambda e: _open(self, "ai.dashboard_charts", "AnalyticsChartsWindow"))
 
         # ---------- Main content ----------
         content = tk.Frame(body, bg="#f5f7fa")
@@ -253,6 +258,10 @@ def install(app_cls):
         management=[
             ("AI Intelligence Suite","Copilot, OCR, Vision & Forecast",
              lambda:_open(self,"ai.ai_hub","AISuiteWindow")),
+            ("Visual Analytics","Interactive sales & margin charts",
+             lambda:_open(self,"ai.dashboard_charts","AnalyticsChartsWindow")),
+            ("AI Upsell Engine","Basket cross-sell recommendations",
+             lambda:_open(self,"ai.recommendations","UpsellManagementWindow")),
             ("Creditors","Supplier accounts",
              lambda:_open(self,"creditor_accounts","SupplierAccountsWindow")),
             ("Reports","Sales & control reports",

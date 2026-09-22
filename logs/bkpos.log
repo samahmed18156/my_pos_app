@@ -2,3 +2,29 @@
 2026-09-22 14:00:36,820 INFO BKPOS clean shutdown recorded reason=normal_exit
 2026-09-22 15:11:25,884 INFO BKPOS startup recorded pid=10308
 2026-09-22 15:15:30,462 INFO BKPOS clean shutdown recorded reason=normal_exit
+2026-09-22 16:01:16,776 INFO BKPOS startup recorded pid=5444
+2026-09-22 16:02:22,048 INFO BKPOS clean shutdown recorded reason=normal_exit
+2026-09-22 16:23:17,261 INFO BKPOS startup recorded pid=12756
+2026-09-22 16:24:01,890 INFO BKPOS clean shutdown recorded reason=normal_exit
+2026-09-22 16:32:46,187 INFO BKPOS startup recorded pid=9096
+2026-09-22 16:33:49,671 WARNING Error loading category share data
+Traceback (most recent call last):
+  File "C:\Users\SERVER\PycharmProjects\my_pos_app\ai\dashboard_charts.py", line 234, in _load_category_data
+    rows = conn.execute(query).fetchall()
+           ~~~~~~~~~~~~^^^^^^^
+sqlite3.OperationalError: no such column: si.department
+2026-09-22 16:34:16,814 WARNING Error in rule-based NLP query
+Traceback (most recent call last):
+  File "C:\Users\SERVER\PycharmProjects\my_pos_app\ai\copilot.py", line 198, in _try_rule_based_nlp
+    rows = [list(r) for r in conn.execute(sql).fetchall()]
+                             ~~~~~~~~~~~~^^^^^
+sqlite3.OperationalError: no such column: a.account_number
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\SERVER\PycharmProjects\my_pos_app\ai\copilot.py", line 205, in _try_rule_based_nlp
+    rows = [list(r) for r in conn.execute(sql).fetchall()]
+                             ~~~~~~~~~~~~^^^^^
+sqlite3.OperationalError: no such column: telephone
+2026-09-22 16:35:28,942 INFO BKPOS clean shutdown recorded reason=normal_exit

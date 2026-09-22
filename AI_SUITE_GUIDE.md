@@ -11,9 +11,11 @@ This guide documents the complete suite of Artificial Intelligence modules integ
 4. [Step C: Computer Vision / Barcode-Free Produce & Bakery Checkout](#4-step-c-computer-vision--barcode-free-produce--bakery-checkout)
 5. [Step D: Machine Learning Demand Forecasting & Smart Reordering](#5-step-d-machine-learning-demand-forecasting--smart-reordering)
 6. [Step E: AI Fraud & Anomaly Audit Detection](#6-step-e-ai-fraud--anomaly-audit-detection)
-7. [AI Suite Executive Control Center & Settings](#7-ai-suite-executive-control-center--settings)
-8. [Running & Developing in PyCharm](#8-running--developing-in-pycharm)
-9. [Automated Verification & Test Results](#9-automated-verification--test-results)
+7. [Feature 2: AI Market Basket & Upsell Engine](#7-feature-2-ai-market-basket--upsell-engine)
+8. [Feature 3: Real-Time Store Visual Analytics & Graphical Charts](#8-feature-3-real-time-store-visual-analytics--graphical-charts)
+9. [AI Suite Executive Control Center & Settings](#9-ai-suite-executive-control-center--settings)
+10. [Running & Developing in PyCharm](#10-running--developing-in-pycharm)
+11. [Automated Verification & Test Results](#11-automated-verification--test-results)
 
 ---
 
@@ -31,11 +33,15 @@ my_pos_app/
 │   ├── vision_checkout.py        # Step C: OpenCV/PIL Produce Vision & Scale Pricing
 │   ├── forecasting.py            # Step D: Time-Series Regression & Safety Stock Engine
 │   ├── fraud_detection.py        # Step E: Statistical & ML Cashier Anomaly Monitor
+│   ├── recommendations.py        # Feature 2: Market Basket Affinity & Upsell Engine
+│   ├── dashboard_charts.py       # Feature 3: Canvas-Rendered Visual Analytics Charts
 │   └── ai_hub.py                 # Executive Dashboard & POS Installer
 ├── tests/
-│   └── test_ai_suite.py          # 17 comprehensive unit & integration tests
+│   ├── test_ai_suite.py          # 17 unit & integration tests for Steps A to E
+│   └── test_recommendations_and_charts.py # 9 unit & UI tests for Upsell & Charts
 ├── app.py                        # Entry point with install_ai_suite(FamilySupermarketPOS)
 ├── dashboard.py                  # Home dashboard integration & shortcuts
+├── ui/pos.py                     # Cashier POS sales terminal with [F6] Upsell bar
 └── REQUIREMENTS.txt              # Optional dependencies with pure-Python fallbacks
 ```
 
@@ -167,15 +173,58 @@ my_pos_app/
 
 ---
 
-## 7. AI Suite Executive Control Center & Settings
+## 7. Feature 2: AI Market Basket & Upsell Engine
 
-* **Executive Dashboard:** `AISuiteWindow` (central launch pad for all 5 tools).
+* **Module:** `ai/recommendations.py`
+* **Window:** `UpsellManagementWindow`
+* **Shortcut:** `[F6]` inside Cashier Sales Terminal (`ui/pos.py`)
+
+### Features:
+1. **Association Rule Mining:**
+   - Computes support, confidence, and lift factors for item co-occurrences.
+   - Automatically mines historical sales baskets with 1 click (`🧠 Mine Rules from Sales History`).
+   - Pre-loaded with retail supermarket seed rules (Milk $\rightarrow$ Bread, Bread $\rightarrow$ Butter, Coffee $\rightarrow$ Sweetener).
+2. **Live Cashier Upsell Bar:**
+   - Embedded directly into the POS checkout view between the cart table and the input fields.
+   - Dynamically analyzes scanned items in the cart and suggests the highest-lift complement.
+   - Automatically excludes items already present in the active basket and checks stock availability (SOH).
+   - Cashiers can press **`[F6]`** or click `➕ Add Upsell [F6]` to instantly append the suggested item into the cart.
+3. **Rule Management Console:**
+   - Filterable table showing trigger item, recommended item, confidence %, lift, and pitch notes.
+   - Support for manual addition, toggling active status, and deleting rules.
+
+---
+
+## 8. Feature 3: Real-Time Store Visual Analytics & Graphical Charts
+
+* **Module:** `ai/dashboard_charts.py`
+* **Window:** `AnalyticsChartsWindow`
+* **Component:** `DashboardChartsFrame` (embeddable canvas frame)
+
+### Features:
+1. **Pure Tkinter Canvas Rendering:**
+   - Zero external plotting dependencies (no matplotlib or web views required; ultra-fast, lightweight, and offline).
+2. **Interactive Chart Views:**
+   - **Today's 24-Hour Sales Density Curve:** Hourly revenue bars and transaction volumes from 07:00 to 21:00 with peak trading detection.
+   - **7-Day Revenue vs Gross Profit Wave:** Daily comparative bars showing revenue alongside gross margin profit.
+   - **Category & Department Share Donut:** Interactive donut visualization breaking down revenue share across store departments (Bakery, Produce, Dairy, Beverages, etc.) with center total callout.
+3. **Seamless POS & Dashboard Wiring:**
+   - Quick action button `📊 CHARTS` on the cashier POS top bar.
+   - Clickable KPI tiles on the main dashboard (`TODAY'S SALES` and `TRANSACTIONS` tiles open the visual analytics window on click).
+   - Direct launch option in the Dashboard management menu and `AI Suite` dropdown.
+
+---
+
+## 9. AI Suite Executive Control Center & Settings
+
+* **Executive Dashboard:** `AISuiteWindow` (central launch pad for all tools).
 * **Settings Dialog:** `AISettingsDialog` (configure API keys, LLM provider, webcam index, and service levels).
 
 ### Shortcuts Summary:
 | Hotkey | Feature | Description |
 | :--- | :--- | :--- |
 | **`F4`** | Produce Vision Checkout | Camera scan unpackaged produce and loose bakery |
+| **`F6`** | AI Smart Upsell | Add recommended market basket cross-sell item directly to cart |
 | **`F10`** | AI Store Copilot | Natural language questions and store intelligence |
 | **`F1`** | Home Dashboard | Main POS launch dashboard |
 | **`F3`** | Price Lookup | Standard SKU lookup |
@@ -184,7 +233,7 @@ my_pos_app/
 
 ---
 
-## 8. Running & Developing in PyCharm
+## 10. Running & Developing in PyCharm
 
 1. **Open Project:** In PyCharm, choose **File $\rightarrow$ Open** and select `/home/user/my_pos_app`.
 2. **Virtual Environment:** Ensure Python 3.10+ is selected.
@@ -200,9 +249,9 @@ my_pos_app/
 
 ---
 
-## 9. Automated Verification & Test Results
+## 11. Automated Verification & Test Results
 
 All tests pass cleanly with **zero regressions**:
-- **Total Tests:** 253 unit and integration tests.
-- **Pass Rate:** 100% (253 passed in 3.2 seconds).
+- **Total Tests:** 262 unit and integration tests.
+- **Pass Rate:** 100% (262 passed in 3.5 seconds).
 - **Hardening & Quality:** Passes `MaintainabilityHardeningTests` (no bare exception handlers, monotonic document numbering, append-only audit logging).

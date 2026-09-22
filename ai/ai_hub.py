@@ -17,6 +17,8 @@ from ai.ocr_grn import AIInvoiceOCRWindow
 from ai.vision_checkout import ProduceVisionCheckoutWindow
 from ai.forecasting import AIForecastingWindow
 from ai.fraud_detection import AIFraudAnomalyWindow
+from ai.recommendations import UpsellManagementWindow
+from ai.dashboard_charts import AnalyticsChartsWindow
 from ui.theme import PALETTE, FONT, button as themed_button
 from ui.window_polish import polish_window
 
@@ -109,6 +111,22 @@ class AISuiteWindow(tk.Toplevel):
                 PALETTE["primary"]
             ),
             (
+                "🛍️ AI MARKET BASKET & UPSELL",
+                "Smart Co-Occurrence Recommendation",
+                "Mines item co-occurrence associations using support, confidence, and lift metrics. Suggests high-margin add-ons live at checkout to boost average order value.",
+                lambda: UpsellManagementWindow(self.parent),
+                "MANAGE UPSELL RULES 🏷️",
+                PALETTE["primary"]
+            ),
+            (
+                "📊 STORE VISUAL ANALYTICS",
+                "Interactive Graphical Sales & Margins",
+                "Canvas-rendered interactive dashboard charts: 24h peak traffic curves, 7-day revenue vs gross profit waves, and category revenue share breakdown.",
+                lambda: AnalyticsChartsWindow(self.parent),
+                "VIEW VISUAL CHARTS 📈",
+                PALETTE["primary"]
+            ),
+            (
                 "⚙️ AI CONFIGURATION",
                 "Model & Hardware Provider Setup",
                 "Configure LLM endpoints (Local NLP, OpenAI, Anthropic, Ollama), webcam video input, service levels, and fraud sensitivity thresholds.",
@@ -173,6 +191,15 @@ def install(app_cls: Any) -> Any:
             )
             ai_menu.add_separator()
             ai_menu.add_command(
+                label="AI Market Basket & Upsell Rules",
+                command=lambda: UpsellManagementWindow(self)
+            )
+            ai_menu.add_command(
+                label="Store Visual Analytics & Charts",
+                command=lambda: AnalyticsChartsWindow(self)
+            )
+            ai_menu.add_separator()
+            ai_menu.add_command(
                 label="AI Suite Control Center",
                 command=lambda: AISuiteWindow(self)
             )
@@ -202,22 +229,22 @@ def install(app_cls: Any) -> Any:
             if hasattr(self, "pos_screen"):
                 # Check for header brand
                 for child in self.pos_screen.winfo_children():
-                    if isinstance(child, tk.Frame) and child.cget("height") == 88:
+                    if isinstance(child, tk.Frame) and (child == getattr(self, "header_frame", None) or child.cget("height") in (60, 62, 64, 70, 88)):
                         # Add quick AI buttons to header right
                         ai_bar = tk.Frame(child, bg=child.cget("bg"))
-                        ai_bar.pack(side=tk.RIGHT, padx=10, pady=12)
+                        ai_bar.pack(side=tk.RIGHT, padx=10, pady=6)
 
                         btn_copilot = tk.Button(
                             ai_bar,
                             text="🤖 AI Copilot (F10)",
                             font=(FONT, 9, "bold"),
-                            bg="#3b82f6",
+                            bg="#2563eb",
                             fg="white",
-                            activebackground="#2563eb",
+                            activebackground="#1d4ed8",
                             activeforeground="white",
                             bd=0,
                             padx=10,
-                            pady=6,
+                            pady=4,
                             cursor="hand2",
                             command=lambda: AICopilotWindow(self)
                         )
@@ -227,13 +254,13 @@ def install(app_cls: Any) -> Any:
                             ai_bar,
                             text="🍎 Produce Vision (F4)",
                             font=(FONT, 9, "bold"),
-                            bg="#10b981",
+                            bg="#059669",
                             fg="white",
-                            activebackground="#059669",
+                            activebackground="#047857",
                             activeforeground="white",
                             bd=0,
                             padx=10,
-                            pady=6,
+                            pady=4,
                             cursor="hand2",
                             command=lambda: ProduceVisionCheckoutWindow(self)
                         )
@@ -250,6 +277,8 @@ def install(app_cls: Any) -> Any:
     app_cls.open_ai_vision = lambda self: ProduceVisionCheckoutWindow(self)
     app_cls.open_ai_forecasting = lambda self: AIForecastingWindow(self)
     app_cls.open_ai_fraud_monitor = lambda self: AIFraudAnomalyWindow(self)
+    app_cls.open_ai_upsell = lambda self: UpsellManagementWindow(self)
+    app_cls.open_ai_charts = lambda self: AnalyticsChartsWindow(self)
     app_cls.open_ai_suite = lambda self: AISuiteWindow(self)
 
     return app_cls

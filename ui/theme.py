@@ -27,11 +27,12 @@ PALETTE = {
     "secondary_hover": "#334155", # Slate 700
     "focus": "#2563eb",           # Blue 600 focus ring
     "selected": "#dbeafe",        # Light blue 100 selection
-    "nav": "#0f172a",             # Obsidian/slate-900 luxury header
-    "nav_alt": "#1e293b",         # Slate-800
-    "nav_text": "#f8fafc",        # Bright white header text
-    "nav_muted": "#94a3b8",       # Slate-400 header subtitle
-    "total_bg": "#0f172a",        # Deep dark card for totals display
+    "nav": "#0e2a47",             # Premium Blue Knight Deep Royal Sapphire Navy (replaces harsh black #0f172a)
+    "nav_alt": "#143960",         # Blue Knight Navy alternate
+    "nav_text": "#ffffff",        # Bright white header text
+    "nav_muted": "#93c5fd",       # Light sky blue subtitle
+    "total_bg": "#0e2a47",        # Deep Blue Knight Navy for totals panel
+    "total_inner": "#143960",     # Deep blue container for digital readout
     "total_text": "#10b981",      # Luminous emerald green digital readout
 }
 

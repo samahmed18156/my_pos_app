@@ -15,6 +15,8 @@ from ai.ocr_grn import AIInvoiceOCRWindow, InvoiceOCREngine
 from ai.vision_checkout import ProduceVisionCheckoutWindow, ProduceVisionEngine
 from ai.forecasting import AIForecastingWindow, MLForecastingEngine
 from ai.fraud_detection import AIFraudAnomalyWindow, FraudAnomalyEngine
+from ai.recommendations import UpsellManagementWindow, MarketBasketEngine
+from ai.dashboard_charts import AnalyticsChartsWindow, DashboardChartsFrame
 from ai.ai_hub import AISuiteWindow, install as install_ai_suite
 
 __all__ = [
@@ -31,6 +33,10 @@ __all__ = [
     "MLForecastingEngine",
     "AIFraudAnomalyWindow",
     "FraudAnomalyEngine",
+    "UpsellManagementWindow",
+    "MarketBasketEngine",
+    "AnalyticsChartsWindow",
+    "DashboardChartsFrame",
     "AISuiteWindow",
     "install_ai_suite",
 ]

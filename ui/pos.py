@@ -87,10 +87,25 @@ class FamilySupermarketPOS(tk.Tk):
 
         # Give the complete POS enough vertical space so the invoice table,
         # product-entry area, status bar and totals panel do not get cramped.
-        self.geometry(
-            "1440x920"
-        )
-        self.minsize(1200, 800)
+        # Smart adaptive geometry: fits comfortably on 1366x768 and 1080p displays (including 125%/150% scaling)
+        try:
+            scr_w = self.winfo_screenwidth()
+            scr_h = self.winfo_screenheight()
+            init_w = min(1366, max(1024, scr_w - 40))
+            init_h = min(740, max(600, scr_h - 70))
+            self.geometry(f"{init_w}x{init_h}")
+        except Exception:
+            self.geometry("1280x720")
+        self.minsize(1024, 560)
+
+        # Maximize window to fit cashier screen cleanly on Windows / POS terminals
+        try:
+            self.state("zoomed")
+        except Exception:
+            try:
+                self.attributes("-zoomed", True)
+            except Exception as exc:
+                _bkpos_logger.debug("Desktop window zoom not supported in environment", exc_info=exc)
 
         self.configure(
             bg=UI_BG
@@ -168,158 +183,151 @@ class FamilySupermarketPOS(tk.Tk):
 
         window_frame = tk.Frame(self, bg=WHITE)
         self.pos_screen = window_frame
-        window_frame.pack(fill=tk.BOTH, expand=True, padx=8, pady=8)
+        window_frame.pack(fill=tk.BOTH, expand=True, padx=4, pady=4)
 
         # ---------- Header / operator bar ----------
-        header = tk.Frame(window_frame, bg=HEADER_COLOR, height=88)
-        header.pack(fill=tk.X)
+        header = tk.Frame(window_frame, bg=HEADER_COLOR, height=62)
+        self.header_frame = header
+        header.pack(side=tk.TOP, fill=tk.X)
         header.pack_propagate(False)
-        tk.Frame(header, bg=PALETTE["focus"], height=4).pack(side=tk.TOP, fill=tk.X)
+        tk.Frame(header, bg=PALETTE["focus"], height=3).pack(side=tk.TOP, fill=tk.X)
 
         brand = tk.Frame(header, bg=HEADER_COLOR)
-        brand.pack(side=tk.LEFT, padx=18, pady=10)
-        tk.Label(brand, text=get_store_name(), font=("Segoe UI", 19, "bold"),
+        brand.pack(side=tk.LEFT, padx=16, pady=6)
+        tk.Label(brand, text=get_store_name(), font=("Segoe UI", 16, "bold"),
                  bg=HEADER_COLOR, fg=WHITE).pack(anchor="w")
         tk.Label(brand, text=f"Cashier: {self.cashier_name}  |  {self.cashier_role}",
-                 font=("Segoe UI", 10, "bold"), bg=HEADER_COLOR, fg="#e6f0ff").pack(anchor="w", pady=(3,0))
+                 font=("Segoe UI", 9), bg=HEADER_COLOR, fg=PALETTE.get("nav_muted", "#93c5fd")).pack(anchor="w", pady=(1,0))
 
         invoice_box = tk.Frame(header, bg=HEADER_COLOR)
-        invoice_box.pack(side=tk.RIGHT, padx=18, pady=10)
-        self.lbl_date = tk.Label(invoice_box, font=("Segoe UI", 10, "bold"),
-                                 bg=HEADER_COLOR, fg="#e6f0ff")
+        invoice_box.pack(side=tk.RIGHT, padx=16, pady=6)
+        self.lbl_date = tk.Label(invoice_box, font=("Segoe UI", 9),
+                                 bg=HEADER_COLOR, fg=PALETTE.get("nav_muted", "#93c5fd"))
         self.lbl_date.pack(anchor="e")
         self.lbl_current_invoice = tk.Label(invoice_box, text="Invoice 001",
-                                            font=("Segoe UI", 18, "bold"),
+                                            font=("Segoe UI", 15, "bold"),
                                             bg=HEADER_COLOR, fg=WHITE)
         self.lbl_current_invoice.pack(anchor="e")
-        tk.Label(invoice_box, text="OPEN", font=("Segoe UI", 9, "bold"),
-                 bg=HEADER_COLOR, fg="#c6f6d5").pack(anchor="e")
+        tk.Label(invoice_box, text="OPEN", font=("Segoe UI", 8, "bold"),
+                 bg=HEADER_COLOR, fg="#86efac").pack(anchor="e")
         self.update_date()
 
         # ---------- Quick actions ----------
-        action_bar = tk.Frame(window_frame, bg=FRAME_BG, padx=10, pady=8)
-        action_bar.pack(fill=tk.X)
-        themed_button(action_bar, "＋ NEW INVOICE", self.create_new_invoice, kind="success", padx=16, pady=8).pack(side=tk.LEFT, padx=(0,6))
-        themed_button(action_bar, "OPEN INVOICES", self.open_invoice_selector, kind="primary", padx=16, pady=8).pack(side=tk.LEFT, padx=6)
-        tk.Label(action_bar, text="F3 Product Lookup   •   Ctrl+N New   •   Ctrl+I Open   •   F12 Payment",
-                 font=("Segoe UI", 10, "bold"), bg=FRAME_BG, fg="#4a5568").pack(side=tk.RIGHT, padx=5)
+        action_bar = tk.Frame(window_frame, bg=FRAME_BG, padx=8, pady=4)
+        action_bar.pack(side=tk.TOP, fill=tk.X)
+        themed_button(action_bar, "＋ NEW INVOICE", self.create_new_invoice, kind="success", padx=12, pady=5).pack(side=tk.LEFT, padx=(0,4))
+        themed_button(action_bar, "OPEN INVOICES", self.open_invoice_selector, kind="primary", padx=12, pady=5).pack(side=tk.LEFT, padx=4)
+        themed_button(action_bar, "📊 CHARTS", self.open_visual_analytics, kind="secondary", padx=10, pady=5).pack(side=tk.LEFT, padx=4)
+        tk.Label(action_bar, text="F3 Product Lookup   •   F6 Upsell   •   Ctrl+N New   •   Ctrl+I Open   •   F12 Payment",
+                 font=("Segoe UI", 9, "bold"), bg=FRAME_BG, fg="#4a5568").pack(side=tk.RIGHT, padx=5)
 
         # ---------- Customer / invoice information ----------
-        info = tk.Frame(window_frame, bg=WHITE, bd=1, relief=tk.SOLID, padx=10, pady=8)
-        info.pack(fill=tk.X, padx=2, pady=(8,5))
-        tk.Label(info, text="CUSTOMER / SALE", font=("Segoe UI", 9, "bold"),
-                 bg=WHITE, fg=BLUE_TEXT).grid(row=0, column=0, columnspan=4, sticky="w", pady=(0,6))
-
-        tk.Label(info, text="Account / No.", font=("Segoe UI", 10, "bold"), bg=WHITE).grid(row=1,column=0,sticky="w")
-        # The sale account is deliberately a controlled selection rather than a
-        # free-text field. CASH is always available and active debtor accounts
-        # are loaded from the customers table. This prevents invoices being
-        # posted against an empty or misspelled account number.
+        info = tk.Frame(window_frame, bg=WHITE, bd=1, relief=tk.SOLID, padx=8, pady=3)
+        info.pack(side=tk.TOP, fill=tk.X, padx=2, pady=(2, 2))
+        tk.Label(info, text="CUSTOMER / SALE:", font=("Segoe UI", 9, "bold"), bg=WHITE, fg=BLUE_TEXT).pack(side=tk.LEFT, padx=(4, 6))
+        tk.Label(info, text="Account:", font=("Segoe UI", 9, "bold"), bg=WHITE, fg="#334155").pack(side=tk.LEFT, padx=(0, 4))
         self.entry_num = ttk.Combobox(
-            info, state="readonly", width=22,
-            font=("Segoe UI", 12, "bold")
+            info, state="readonly", width=16,
+            font=("Segoe UI", 10, "bold")
         )
-        self.entry_num.grid(row=1,column=1,sticky="w",padx=(6,25))
-        tk.Label(info, text="Customer Name", font=("Segoe UI", 10, "bold"), bg=WHITE).grid(row=1,column=2,sticky="w")
-        self.entry_name = tk.Entry(info, **entry_options(font=("Segoe UI", 12), width=30))
+        self.entry_num.pack(side=tk.LEFT, padx=(0, 14))
+        tk.Label(info, text="Customer Name:", font=("Segoe UI", 9, "bold"), bg=WHITE, fg="#334155").pack(side=tk.LEFT, padx=(0, 4))
+        self.entry_name = tk.Entry(info, **entry_options(font=("Segoe UI", 10), width=28))
         self.entry_name.insert(0, "Cash Sale")
-        self.entry_name.grid(row=1,column=3,sticky="w",padx=(6,0))
-        themed_button(info, "F3 CUSTOMER LOOKUP", self.open_customer_lookup, kind="primary", padx=14, pady=7).grid(row=1, column=4, padx=(10,0), sticky="w")
+        self.entry_name.pack(side=tk.LEFT, padx=(0, 10))
+        themed_button(info, "F3 CUSTOMER LOOKUP", self.open_customer_lookup, kind="primary", font=("Segoe UI", 9, "bold"), padx=10, pady=4).pack(side=tk.LEFT)
 
         # ---------- Invoice tabs ----------
         self.invoice_tabs_frame = tk.Frame(window_frame, bg=WHITE)
-        self.invoice_tabs_frame.pack(fill=tk.X, padx=2, pady=(2,5))
+        self.invoice_tabs_frame.pack(side=tk.TOP, fill=tk.X, padx=2, pady=(1, 2))
 
-        # ---------- Cart ----------
-        cart_wrap = tk.Frame(window_frame, bg=WHITE, bd=1, relief=tk.SOLID)
-        cart_wrap.pack(fill=tk.BOTH, expand=True, padx=2, pady=2)
-        tk.Label(cart_wrap, text="CURRENT INVOICE", font=("Segoe UI", 10, "bold"),
-                 bg=WHITE, fg=BLUE_TEXT, padx=10, pady=6).pack(anchor="w")
-        table_frame = tk.Frame(cart_wrap, bg=WHITE)
-        table_frame.pack(fill=tk.BOTH, expand=True, padx=8, pady=(0,8))
+        # ====================================================
+        # FIXED BOTTOM CONTROLS & STATUS (PACKED FIRST FROM BOTTOM)
+        # Packing from side=tk.BOTTOM guarantees these essential panels
+        # NEVER get clipped or pushed off screen on smaller displays.
+        # ====================================================
 
-        columns = ("code", "description", "qty", "price", "value")
-        self.tree = ttk.Treeview(table_frame, columns=columns, show="headings", style="BK.Treeview")
-        for col, title in [("code","Barcode / Code"),("description","Product Description"),
-                           ("qty","Qty"),("price","Price"),("value","Value")]:
-            self.tree.heading(col, text=title)
-        self.tree.column("code", width=150, anchor="w")
-        self.tree.column("description", width=500, anchor="w")
-        self.tree.column("qty", width=80, anchor="center")
-        self.tree.column("price", width=110, anchor="e")
-        self.tree.column("value", width=125, anchor="e")
-        yscroll = ttk.Scrollbar(table_frame, orient="vertical", command=self.tree.yview)
-        self.tree.configure(yscrollcommand=yscroll.set)
-        self.tree.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
-        yscroll.pack(side=tk.RIGHT, fill=tk.Y)
-        self.tree.bind("<Delete>", self.delete_selected_item)
-        self.tree.bind("<BackSpace>", self.delete_selected_item)
-        self.tree.bind("<Double-Button-3>", self.open_edit_cart_item)
+        # 1. Checkout action controls
+        controls = tk.Frame(window_frame, bg=WHITE, pady=3)
+        controls.pack(side=tk.BOTTOM, fill=tk.X, padx=2, pady=(1, 3))
+        themed_button(controls, "🗑️ REMOVE ITEM (Del)", self.delete_selected_item, kind="danger", font=("Segoe UI", 9, "bold"), padx=12, pady=6).pack(side=tk.LEFT, padx=(2, 4))
+        themed_button(controls, "💳 DONE / PAYMENT  F12", self.checkout, kind="success", font=("Segoe UI", 11, "bold"), padx=24, pady=7).pack(side=tk.RIGHT, padx=2)
 
-        # ---------- Professional Product Entry ----------
-        # Compact, invoice-style entry area: large and easy to use,
-        # but intentionally not stretched across the whole window.
+        # 2. Bottom status readout
+        bottom = tk.Frame(window_frame, bg=WHITE, padx=2, pady=1)
+        bottom.pack(side=tk.BOTTOM, fill=tk.X)
+        status = tk.Frame(bottom, bg="#f8fafc", bd=1, relief=tk.SOLID, padx=8, pady=3)
+        status.pack(fill=tk.X, expand=True)
+        self.lbl_credit = tk.Label(status, text="Credit Limit: 0.00   |   O/S Balance: 0.00",
+                                   font=("Segoe UI", 9, "bold"), bg="#f8fafc", fg="#4a5568", anchor="w")
+        self.lbl_credit.pack(side=tk.LEFT)
+        self.lbl_num_items = tk.Label(status, text="Items: 0", font=("Segoe UI", 9, "bold"),
+                                      bg="#f8fafc", fg="#4a5568", anchor="e")
+        self.lbl_num_items.pack(side=tk.RIGHT)
+        self.lbl_ready = tk.Label(status, text="● READY", font=("Segoe UI", 9, "bold"),
+                                   bg="#f8fafc", fg="#16803c", anchor="w")
+        self.lbl_ready.pack(side=tk.RIGHT, padx=(0, 16))
+
+        # 3. Add Product Panel + Totals Panel
         entry_panel = tk.Frame(
             window_frame,
             bg=FRAME_BG,
             bd=1,
             relief=tk.SOLID,
-            padx=10,
-            pady=8
+            padx=8,
+            pady=4
         )
-        entry_panel.pack(fill=tk.X, padx=2, pady=(6,5))
+        entry_panel.pack(side=tk.BOTTOM, fill=tk.X, padx=2, pady=(2, 2))
         entry_panel.grid_columnconfigure(4, weight=1)
 
         tk.Label(
             entry_panel,
             text="ADD PRODUCT",
-            font=("Segoe UI", 11, "bold"),
+            font=("Segoe UI", 10, "bold"),
             bg=FRAME_BG,
             fg=BLUE_TEXT
-        ).grid(row=0, column=0, columnspan=4, sticky="w", pady=(0,6))
+        ).grid(row=0, column=0, columnspan=4, sticky="w", pady=(0, 2))
 
-        # The four input columns deliberately use compact fixed widths.
-        # The fonts/heights stay large; only the horizontal width is limited.
         entry_specs = [
-            ("Barcode / Code", 0, 14, "w"),
-            ("Description", 1, 34, "w"),
-            ("Qty", 2, 6, "center"),
-            ("Price", 3, 10, "e"),
+            ("Barcode / Code", 0, 13, "w"),
+            ("Description", 1, 30, "w"),
+            ("Qty", 2, 5, "center"),
+            ("Price", 3, 9, "e"),
         ]
 
         for label, col, _width, _anchor in entry_specs:
             tk.Label(
                 entry_panel,
                 text=label,
-                font=("Segoe UI", 10, "bold"),
+                font=("Segoe UI", 9, "bold"),
                 bg=FRAME_BG,
                 fg="#374151"
             ).grid(
                 row=1,
                 column=col,
                 sticky="w",
-                padx=(0 if col == 0 else 6, 6),
-                pady=(0,4)
+                padx=(0 if col == 0 else 4, 4),
+                pady=(0, 2)
             )
 
         self.code_entry = tk.Entry(
             entry_panel,
-            **entry_options(font=("Segoe UI", 16, "bold"), width=14, bd=2)
+            **entry_options(font=("Segoe UI", 13, "bold"), width=13, bd=2)
         )
-        self.code_entry.grid(row=2, column=0, sticky="ew", padx=(0,6), ipady=5)
+        self.code_entry.grid(row=2, column=0, sticky="ew", padx=(0, 4), ipady=3)
 
         self.desc_display = tk.Entry(
             entry_panel,
-            **entry_options(font=("Segoe UI", 15), width=34, state="readonly", readonlybackground="#f8fafc")
+            **entry_options(font=("Segoe UI", 12), width=30, state="readonly", readonlybackground="#f8fafc")
         )
-        self.desc_display.grid(row=2, column=1, sticky="ew", padx=6, ipady=5)
+        self.desc_display.grid(row=2, column=1, sticky="ew", padx=4, ipady=3)
 
         self.qty_entry = tk.Entry(
             entry_panel,
-            **entry_options(font=("Segoe UI", 16, "bold"), width=6, justify="center")
+            **entry_options(font=("Segoe UI", 13, "bold"), width=5, justify="center")
         )
         self.qty_entry.insert(0, "1")
-        self.qty_entry.grid(row=2, column=2, sticky="ew", padx=6, ipady=5)
+        self.qty_entry.grid(row=2, column=2, sticky="ew", padx=4, ipady=3)
 
         if self.can("can_edit_qty"):
             vcmd_qty = self.register(self._validate_qty_keystroke)
@@ -332,29 +340,28 @@ class FamilySupermarketPOS(tk.Tk):
 
         self.price_display = tk.Entry(
             entry_panel,
-            **entry_options(font=("Segoe UI", 16, "bold"), width=10, justify="right")
+            **entry_options(font=("Segoe UI", 13, "bold"), width=9, justify="right")
         )
         self.price_display.insert(0, "0")
-        self.price_display.grid(row=2, column=3, sticky="ew", padx=6, ipady=5)
+        self.price_display.grid(row=2, column=3, sticky="ew", padx=4, ipady=3)
 
         if not self.can("can_edit_price"):
             self.price_display.config(state="readonly")
 
-        # Buttons are on their own full row, just like the invoice-style layout.
         button_row = tk.Frame(entry_panel, bg=FRAME_BG)
-        button_row.grid(row=3, column=0, columnspan=4, sticky="ew", pady=(8,0))
+        button_row.grid(row=3, column=0, columnspan=4, sticky="ew", pady=(4, 2))
 
-        themed_button(button_row, "ADD PRODUCT", self.add_current_item_to_cart, kind="success", font=("Segoe UI", 11, "bold"), padx=20, pady=8).pack(side=tk.LEFT, padx=(0,6))
-        themed_button(button_row, "CLEAR", self.clear_product_input, kind="secondary", font=("Segoe UI", 11, "bold"), padx=24, pady=8).pack(side=tk.LEFT, padx=6)
-        themed_button(button_row, "F3 PRODUCT LOOKUP", self.open_f3_lookup, kind="primary", font=("Segoe UI", 11, "bold"), padx=18, pady=8).pack(side=tk.LEFT, padx=6)
+        themed_button(button_row, "ADD PRODUCT", self.add_current_item_to_cart, kind="success", font=("Segoe UI", 10, "bold"), padx=14, pady=5).pack(side=tk.LEFT, padx=(0, 4))
+        themed_button(button_row, "CLEAR", self.clear_product_input, kind="secondary", font=("Segoe UI", 10, "bold"), padx=16, pady=5).pack(side=tk.LEFT, padx=4)
+        themed_button(button_row, "F3 PRODUCT LOOKUP", self.open_f3_lookup, kind="primary", font=("Segoe UI", 10, "bold"), padx=12, pady=5).pack(side=tk.LEFT, padx=4)
 
         tk.Label(
             button_row,
-            text="ENTER to add  •  F3 to search",
-            font=("Segoe UI", 9, "bold"),
+            text="ENTER to add • F3 to search",
+            font=("Segoe UI", 8),
             bg=FRAME_BG,
             fg="#718096"
-        ).pack(side=tk.LEFT, padx=(12,0))
+        ).pack(side=tk.LEFT, padx=(8, 0))
 
         self.code_entry.focus_set()
 
@@ -365,6 +372,7 @@ class FamilySupermarketPOS(tk.Tk):
         self.entry_num.bind("<F3>", self.open_customer_lookup)
         self.entry_name.bind("<F3>", self.open_customer_lookup)
         self.bind("<F3>", self.open_f3_lookup)
+        self.bind("<F6>", lambda e: self.add_recommended_upsell_to_cart())
         self.bind("<F12>", self.checkout)
         self.bind("<F9>", lambda e: open_quotation(self))
         self.bind("<Control-Shift-R>", lambda e: ReturnsWindow(self))
@@ -376,51 +384,48 @@ class FamilySupermarketPOS(tk.Tk):
         # Populate the account selector after all account-related widgets exist.
         self._refresh_sale_account_options("CASH")
 
-        # ---------- Invoice totals: fixed at the right corner of Add Product ----------
-        # Keep the totals visible on the same horizontal level as the product
-        # entry fields. This prevents the totals panel from being pushed below
-        # the screen on smaller displays.
+        # Totals Panel in Premium Blue Knight Navy
         totals = tk.Frame(
             entry_panel,
-            bg=PALETTE.get("total_bg", "#0f172a"),
+            bg=PALETTE.get("total_bg", "#0e2a47"),
             bd=0,
             relief=tk.FLAT,
-            padx=12,
-            pady=8
+            padx=10,
+            pady=4
         )
         totals.grid(
             row=0,
             column=4,
             rowspan=4,
             sticky="nsew",
-            padx=(16, 2),
+            padx=(10, 2),
             pady=0
         )
-        entry_panel.grid_columnconfigure(4, minsize=245, weight=1)
+        entry_panel.grid_columnconfigure(4, minsize=240, weight=1)
 
         def total_row(r, label, attr, bold=False):
             tk.Label(
                 totals,
                 text=label,
-                font=("Segoe UI", 11, "bold"),
-                bg=PALETTE.get("total_bg", "#0f172a"),
-                fg="#94a3b8" if not bold else "#ffffff",
+                font=("Segoe UI", 9 if not bold else 10, "bold"),
+                bg=PALETTE.get("total_bg", "#0e2a47"),
+                fg="#93c5fd" if not bold else "#ffffff",
                 anchor="e"
-            ).grid(row=r, column=0, sticky="e", padx=(2, 7), pady=3)
+            ).grid(row=r, column=0, sticky="e", padx=(2, 6), pady=2)
 
             lab = tk.Label(
                 totals,
                 text="0.00",
-                font=("Segoe UI", 16 if not bold else 22, "bold"),
-                bg="#1e293b",
+                font=("Segoe UI", 12 if not bold else 18, "bold"),
+                bg=PALETTE.get("total_inner", "#143960"),
                 fg="#ffffff" if not bold else PALETTE.get("total_text", "#10b981"),
                 width=11,
                 anchor="e",
                 bd=0,
                 relief=tk.FLAT,
-                padx=8
+                padx=6
             )
-            lab.grid(row=r, column=1, sticky="ew", padx=(0, 2), pady=3, ipady=3)
+            lab.grid(row=r, column=1, sticky="ew", padx=(0, 2), pady=2, ipady=2)
             setattr(self, attr, lab)
 
         totals.grid_columnconfigure(1, weight=1)
@@ -428,26 +433,91 @@ class FamilySupermarketPOS(tk.Tk):
         total_row(1, "VAT:", "lbl_vat")
         total_row(2, "TOTAL:", "lbl_total", True)
 
-        # ---------- Bottom status ----------
-        bottom = tk.Frame(window_frame, bg=WHITE, padx=2, pady=5)
-        bottom.pack(fill=tk.X)
-        status = tk.Frame(bottom, bg="#f7fafc", bd=1, relief=tk.SOLID, padx=10, pady=6)
-        status.pack(fill=tk.X, expand=True)
-        self.lbl_credit = tk.Label(status, text="Credit Limit: 0.00   |   O/S Balance: 0.00",
-                                   font=("Segoe UI",10,"bold"), bg="#f7fafc", fg="#4a5568", anchor="w")
-        self.lbl_credit.pack(side=tk.LEFT)
-        self.lbl_num_items = tk.Label(status, text="Items: 0", font=("Segoe UI",10,"bold"),
-                                      bg="#f7fafc", fg="#4a5568", anchor="e")
-        self.lbl_num_items.pack(side=tk.RIGHT)
-        self.lbl_ready = tk.Label(status, text="● READY", font=("Segoe UI",10,"bold"),
-                                   bg="#f7fafc", fg="#16803c", anchor="w")
-        self.lbl_ready.pack(side=tk.RIGHT, padx=(0,20))
+        # 4. AI Upsell Bar (immediately above entry_panel)
+        self._current_upsell_product = None
+        self.upsell_bar = tk.Frame(window_frame, bg="#eff6ff", bd=1, relief=tk.SOLID, padx=8, pady=3)
+        self.upsell_bar.pack(side=tk.BOTTOM, fill=tk.X, padx=2, pady=(1, 2))
 
-        # Fixed checkout controls
-        controls = tk.Frame(window_frame, bg=WHITE, pady=4)
-        controls.pack(fill=tk.X)
-        themed_button(controls, "🗑️ REMOVE ITEM (Del)", self.delete_selected_item, kind="danger", font=("Segoe UI",10,"bold"), padx=14, pady=8).pack(side=tk.LEFT, padx=(2,5))
-        themed_button(controls, "💳 DONE / PAYMENT  F12", self.checkout, kind="success", font=("Segoe UI",12,"bold"), padx=28, pady=10).pack(side=tk.RIGHT, padx=2)
+        self.lbl_upsell_icon = tk.Label(
+            self.upsell_bar,
+            text="💡 AI UPSELL",
+            font=("Segoe UI", 8, "bold"),
+            bg="#2563eb",
+            fg="white",
+            padx=5,
+            pady=1
+        )
+        self.lbl_upsell_icon.pack(side=tk.LEFT, padx=(0, 6))
+
+        self.lbl_upsell_text = tk.Label(
+            self.upsell_bar,
+            text="Scan items to view AI basket recommendations • Press F6 to add",
+            font=("Segoe UI", 9),
+            bg="#eff6ff",
+            fg="#1e293b"
+        )
+        self.lbl_upsell_text.pack(side=tk.LEFT, fill=tk.X, expand=True)
+
+        self.btn_add_upsell = tk.Button(
+            self.upsell_bar,
+            text="➕ Add Upsell [F6]",
+            font=("Segoe UI", 9, "bold"),
+            bg="#059669",
+            fg="white",
+            activebackground="#047857",
+            activeforeground="white",
+            bd=0,
+            padx=8,
+            pady=2,
+            state="disabled",
+            cursor="hand2",
+            command=self.add_recommended_upsell_to_cart
+        )
+        self.btn_add_upsell.pack(side=tk.RIGHT, padx=3)
+
+        self.btn_upsell_rules = tk.Button(
+            self.upsell_bar,
+            text="⚙️ Rules",
+            font=("Segoe UI", 8),
+            bg="#e2e8f0",
+            fg="#475569",
+            activebackground="#cbd5e1",
+            bd=0,
+            padx=6,
+            pady=2,
+            cursor="hand2",
+            command=self.open_upsell_management
+        )
+        self.btn_upsell_rules.pack(side=tk.RIGHT, padx=2)
+
+        # ---------- Cart (CURRENT INVOICE table) ----------
+        # Packed TOP with fill=BOTH, expand=True AFTER all top and bottom widgets
+        # are positioned. This guarantees it smoothly fills the middle area without
+        # pushing the totals or payment buttons off screen.
+        cart_wrap = tk.Frame(window_frame, bg=WHITE, bd=1, relief=tk.SOLID)
+        cart_wrap.pack(side=tk.TOP, fill=tk.BOTH, expand=True, padx=2, pady=(1, 2))
+        tk.Label(cart_wrap, text="CURRENT INVOICE", font=("Segoe UI", 10, "bold"),
+                 bg=WHITE, fg=BLUE_TEXT, padx=8, pady=4).pack(anchor="w")
+        table_frame = tk.Frame(cart_wrap, bg=WHITE)
+        table_frame.pack(fill=tk.BOTH, expand=True, padx=6, pady=(0,6))
+
+        columns = ("code", "description", "qty", "price", "value")
+        self.tree = ttk.Treeview(table_frame, columns=columns, show="headings", style="BK.Treeview", height=6)
+        for col, title in [("code","Barcode / Code"),("description","Product Description"),
+                           ("qty","Qty"),("price","Price"),("value","Value")]:
+            self.tree.heading(col, text=title)
+        self.tree.column("code", width=140, anchor="w")
+        self.tree.column("description", width=480, anchor="w")
+        self.tree.column("qty", width=75, anchor="center")
+        self.tree.column("price", width=105, anchor="e")
+        self.tree.column("value", width=120, anchor="e")
+        yscroll = ttk.Scrollbar(table_frame, orient="vertical", command=self.tree.yview)
+        self.tree.configure(yscrollcommand=yscroll.set)
+        self.tree.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+        yscroll.pack(side=tk.RIGHT, fill=tk.Y)
+        self.tree.bind("<Delete>", self.delete_selected_item)
+        self.tree.bind("<BackSpace>", self.delete_selected_item)
+        self.tree.bind("<Double-Button-3>", self.open_edit_cart_item)
 
         # Draw tabs now that the UI exists
         self.refresh_invoice_tabs()
@@ -1759,6 +1829,100 @@ class FamilySupermarketPOS(tk.Tk):
         )
 
         self.refresh_invoice_tabs()
+        self._refresh_ai_upsell_bar()
+
+    def open_visual_analytics(self):
+        try:
+            from ai.dashboard_charts import AnalyticsChartsWindow
+            AnalyticsChartsWindow(self)
+        except Exception as exc:
+            messagebox.showerror("Error", f"Could not open Visual Analytics: {exc}", parent=self)
+
+    def open_upsell_management(self):
+        try:
+            from ai.recommendations import UpsellManagementWindow
+            UpsellManagementWindow(self)
+        except Exception as exc:
+            messagebox.showerror("Error", f"Could not open Upsell Rules: {exc}", parent=self)
+
+    def add_recommended_upsell_to_cart(self, event=None):
+        if not getattr(self, "_current_upsell_product", None):
+            return "break"
+        rec = self._current_upsell_product
+        code = str(rec.get("code", ""))
+        name = str(rec.get("name", "Item"))
+        price = float(rec.get("price", 0.0))
+        cost = float(rec.get("cost", 0.0))
+
+        invoice = self.current_invoice()
+        cart = invoice.get("cart", [])
+        found = False
+        for item in cart:
+            if str(item.get("code")) == code:
+                item["qty"] += 1.0
+                item["value"] = item["qty"] * item["price"]
+                found = True
+                break
+        if not found:
+            cart.append({
+                "code": code,
+                "name": name,
+                "qty": 1.0,
+                "price": price,
+                "cost": cost,
+                "value": price * 1.0
+            })
+        self.update_cart_display()
+        if hasattr(self, "lbl_ready"):
+            self.lbl_ready.config(text=f"● Added {name} [F6]", fg="#16803c")
+        return "break"
+
+    def _refresh_ai_upsell_bar(self):
+        if not hasattr(self, "lbl_upsell_text") or not hasattr(self, "btn_add_upsell"):
+            return
+        invoice = self.current_invoice()
+        cart = invoice.get("cart", [])
+        if not cart:
+            self._current_upsell_product = None
+            self.lbl_upsell_text.config(
+                text="Scan items to view AI basket recommendations • Press F6 to add",
+                fg="#64748b"
+            )
+            self.btn_add_upsell.config(state="disabled", text="➕ Add Upsell [F6]")
+            return
+
+        cart_codes = [str(item.get("code", "")) for item in cart if item.get("code")]
+        last_item_name = cart[-1].get("name", "item")
+
+        try:
+            from ai.recommendations import MarketBasketEngine
+            engine = MarketBasketEngine(DB_NAME)
+            recs = engine.get_recommendations(cart_codes, limit=3)
+            if recs:
+                top = recs[0]
+                self._current_upsell_product = top
+                price_str = f"R{top['price']:.2f}"
+                lift_str = f"Lift: {top['lift']:.1f}x" if top.get("lift") else "Smart Pick"
+                conf_pct = int(top.get("confidence", 0) * 100)
+                conf_str = f"{conf_pct}% conf" if conf_pct > 0 else "Recommended"
+
+                self.lbl_upsell_text.config(
+                    text=f"Often bought with {last_item_name}:  {top['name']} ({price_str})  —  {lift_str} • {conf_str} ({top.get('reason', '')})",
+                    fg="#0f172a"
+                )
+                self.btn_add_upsell.config(
+                    state="normal",
+                    text=f"➕ Add {top['name'][:18]} ({price_str}) [F6]"
+                )
+            else:
+                self._current_upsell_product = None
+                self.lbl_upsell_text.config(
+                    text=f"Cart has {len(cart)} item(s) • No higher-margin rule matches for this combination",
+                    fg="#64748b"
+                )
+                self.btn_add_upsell.config(state="disabled", text="➕ Add Upsell [F6]")
+        except Exception as exc:
+            _bkpos_logger.warning("Suppressed exception refreshing upsell bar", exc_info=exc)
 
     # ========================================================
     # DELETE ITEM
