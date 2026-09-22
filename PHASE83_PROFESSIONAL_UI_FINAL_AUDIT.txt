@@ -1,0 +1,33 @@
+BKPOS Professional UI — Final Validation
+========================================
+
+Scope
+-----
+Presentation-only validation of the BKPOS desktop interface. No database,
+business logic, permissions, JasperViewer, reporting, or printing behavior
+was intentionally changed in this phase.
+
+Validated
+---------
+- Central BKPOS visual palette and Segoe UI typography are present.
+- Main POS uses the shared professional theme and visual hierarchy.
+- Main POS header clearly identifies store, cashier, role, date, and invoice.
+- Quick actions and keyboard shortcuts are surfaced on the sales screen.
+- Customer/sale information is separated from the invoice grid.
+- Invoice totals and payment action remain visually prominent.
+- Product/customer lookup windows use consistent professional presentation.
+- Shared window polishing applies consistent BKPOS titles/backgrounds/TTK styles.
+- Professional dashboard identity is BKPOS 10.0.0; stale release text is absent.
+- No UI change intentionally alters database or business behavior.
+
+Regression validation
+---------------------
+- Phase 81 UI/UX tests: PASS
+- Reporting/printing gate tests: PASS
+- Migration tests: PASS
+- Gold identity/version assertions: PASS
+
+Release hygiene
+---------------
+The source-release copy excludes runtime databases, logs, generated files,
+Python bytecode/cache directories, and other local development artifacts.

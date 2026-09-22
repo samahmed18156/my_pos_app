@@ -1,0 +1,10 @@
+BKPOS Phase 64 Release Audit
+============================
+Configuration/deployment cleanup: PASS
+Phase 63 packaging regression tests: PASS (6)
+Phase 64 configuration tests: PASS (4)
+Python compilation: PASS
+Runtime database shipped: NO
+Python bytecode shipped: NO
+__pycache__ shipped: NO
+Installed BKPOS executable modified: NO

@@ -1,0 +1,5 @@
+Required / recommended Python packages
+
+reportlab>=4.0
+# Optional: enhanced calendar date picker. Reports has a built-in fallback if omitted.
+tkcalendar>=1.6

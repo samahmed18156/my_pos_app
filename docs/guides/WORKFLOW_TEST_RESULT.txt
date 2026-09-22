@@ -1,0 +1,20 @@
+POS WORKFLOW TEST / PRODUCT-STOCK BOUNDARY
+
+PASS
+- Product Management creates products.
+- New products start with SOH = 0.
+- Product Details & Pricing only maintains existing product details, retail price, cost and Retail/Bulk/Wholesale pricing.
+- Product Details & Pricing never edits SOH, minimum stock, reorder quantity, unit-of-sale or packing controls.
+- GRN selects existing products using F3 and receives stock into SOH.
+- Sales reduce SOH.
+- Returns/Credit Notes restore SOH.
+- Product Lookup is read-only.
+
+TESTED STOCK FLOW
+Product created -> SOH 0 -> GRN +5 -> SOH 5 -> Sale -2 -> SOH 3 -> Return +1 -> SOH 4.
+
+VAT
+Selling prices are VAT-inclusive. VAT = gross * 15 / 115.
+
+MENU
+Product Management is the only product creation/maintenance entry. Product Details & Pricing is opened from Product Management; it is not a separate top-level workflow.

@@ -1,0 +1,14 @@
+BKPOS Phase 80 — GOLD RELEASE AUDIT
+===================================
+Application identity: BKPOS 10.0.0
+Windows executable version: 10.0.0.0
+Release status: GOLD RELEASE
+Targeted regression tests: PASS (54 passed)
+Python compilation: PASS
+Phase 65 production audit: PASS
+Phase 80 Gold Release gate: PASS
+Per-user installer: PASS
+Stable installer AppId: PASS
+Live installed executable: NOT TOUCHED
+Live BKPOS database: NOT TOUCHED
+Release database/bytecode/cache/runtime artifacts: EXCLUDED

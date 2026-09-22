@@ -1,0 +1,49 @@
+BKPOS CLEAN DISTRIBUTION MANIFEST — FINAL SOURCE RELEASE
+
+This source release tree intentionally excludes machine-specific, writable,
+generated, build, and IDE artifacts. The source tree is safe to use as the
+master PyCharm project and as the input to the Windows packaging scripts.
+
+REQUIRED ROOT/PACKAGING
+.gitignore
+RELEASE_VERSION.txt
+VERSION.txt
+REQUIREMENTS.txt
+packaging/windows/MAKE_BKPOS_INSTALLER.bat
+packaging/windows/build_bkpos_windows10.bat
+packaging/windows/build_bkpos_legacy.bat
+packaging/windows/BKPOS_Windows10.spec
+packaging/windows/BKPOS_Windows10.iss
+packaging/windows/BKPOS.spec
+packaging/windows/BKPOS.iss
+packaging/windows/CREATE_BKPOS_DESKTOP_SHORTCUT.bat
+packaging/windows/README_WINDOWS_DESKTOP_BUILD.md
+
+DO NOT SHIP IN SOURCE RELEASE ZIP
+- pos_store.db / pos_store.sqlite / pos_store.sqlite3
+- backups/
+- generated/
+- receipts/
+- logs/
+- diagnostics/
+- runtime/
+- __pycache__/
+- *.pyc / *.pyo
+- .pytest_cache/
+- .mypy_cache/
+- .ruff_cache/
+- .idea/
+- packaging/windows/output/
+- build/
+- dist/
+- nested project ZIP files
+
+JASPER RUNTIME
+jasper_runtime/ is intentionally retained because the Windows PyInstaller
+spec packages these JasperReports dependencies into the BKPOS application.
+It is not user data and is required for JasperViewer/report functionality.
+
+INSTALLED APP DATA
+Packaged BKPOS stores live writable data under %APPDATA%\BKPOS.
+The PyCharm source project's database is not the installed application's live database.
+The installed application itself is under %LOCALAPPDATA%\BKPOS.

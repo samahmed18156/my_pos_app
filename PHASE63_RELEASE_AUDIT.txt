@@ -1,0 +1,12 @@
+BKPOS PHASE 63 RELEASE AUDIT
+
+Packaging tree: BKPOS branded
+Windows 10/11 installer definitions: PASS
+Per-user installation: PASS
+Installed app/data separation: PASS
+Development database excluded: PASS
+Generated runtime output excluded: PASS
+Python cache/bytecode excluded: PASS
+Legacy MiPOS installer definitions removed: PASS
+BKPOS executable/installer naming standardized: PASS
+Phase 62 recovery validation retained: PASS

@@ -1,0 +1,19 @@
+PRODUCT MASTER — STOCK CONTROL UPDATE
+
+Product Master is now for product identity, categories, suppliers, pricing and wholesale/bulk pricing.
+
+Removed from Product Master UI:
+- Minimum Stock
+- Reorder Qty
+- Unit of Sale
+- Packing / Case Qty
+- Stock on Hand (SOH) display/edit area
+
+Important:
+- Existing database columns are retained for compatibility with other POS modules.
+- Editing an existing product in Product Master does NOT change SOH.
+- Creating a new product starts SOH at 0.
+- SOH is updated by GRN, sales, returns/credit notes and stock adjustment tools.
+- GRN increases SOH by the quantity received.
+
+This prevents accidental manual stock changes from Product Master.

@@ -1,0 +1,13 @@
+BKPOS Phase 74 — Production Release Gate
+=========================================
+Targeted regression tests: PASS (28 passed)
+Python compilation: PASS
+Phase 65 production audit: PASS
+Release identity: BKPOS 10.0.0-rc1
+Executable version: 10.0.0.0
+Installer AppId: {A3B2C1D0-6F54-4E21-9A87-100000000001}
+Release artifact gate: PASS
+ZIP gate: read-only validation supported
+Live installed executable: NOT TOUCHED
+Live user database: NOT TOUCHED
+Release tree database/bytecode/cache artifacts: EXCLUDED

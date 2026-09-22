@@ -1,0 +1,7 @@
+BKPOS PHASE 62 RELEASE AUDIT
+
+Python compilation: PASS
+Pytest: 287 passed, 20 subtests passed
+Release DB excluded: PASS
+Python caches excluded: PASS
+Recovery validation: backup roundtrip + restore roundtrip + corrupt backup rejection + overwrite refusal

@@ -1,0 +1,9 @@
+PRODUCT LOOKUP WORKFLOW
+
+F3 Product Lookup is a sales-screen product selector only.
+- Search by description or barcode.
+- Select a product with Enter or double-click.
+- No product creation, editing, pricing, stock receiving, or stock adjustment is available here.
+- Retail price and SOH are display information; stock is changed by sales, GRN, and returns.
+
+Price Lookup is view-only for product, category, supplier, cost, retail price, SOH, and active status.

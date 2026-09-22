@@ -1,0 +1,35 @@
+{
+  "root_security_modules": [
+    "audit_log.py",
+    "permissions.py",
+    "security_controls.py"
+  ],
+  "core_security_modules": [
+    "audit_log.py",
+    "permissions.py"
+  ],
+  "root_permissions_references": [
+    "tests/test_business_integrity.py",
+    "tests/test_phase45_permissions.py",
+    "ui/admin_portal.py"
+  ],
+  "root_audit_references": [
+    "database.py",
+    "login.py",
+    "menu_organization.py",
+    "multi_branch.py",
+    "pos_six_upgrades.py",
+    "security_controls.py",
+    "tests/test_audit_integrity.py",
+    "tests/test_phase42_audit_log.py",
+    "tests/test_phase42_database_audit.py",
+    "tests/test_phase43_business_audit.py",
+    "tests/test_phase44_audit_viewer.py",
+    "tests/test_phase45_legacy_audit_schema.py"
+  ],
+  "root_security_controls_references": [
+    "financial_controls.py",
+    "tests/test_security_controls.py",
+    "ui/pos.py"
+  ]
+}

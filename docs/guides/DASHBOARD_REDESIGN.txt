@@ -1,0 +1,15 @@
+DASHBOARD REDESIGN — BKPOS STYLE
+
+The main screen now opens on a BKPOS-style home dashboard with:
+- prominent NEW SALE action
+- KPI cards for today's sales, transactions, debtors outstanding and low stock
+- quick-access tiles for New Sale, Open Invoices, Quotation, Customer & Pricing,
+  Debtors, Creditors, Stock & Products, Reports, and Utility/Admin
+- keyboard shortcuts retained
+- existing POS invoice screen retained unchanged as the selling workflow
+
+The dashboard is presentation-only. It does not create a second debtor, customer,
+quotation, stock or sales workflow.
+
+If the original friend's screenshot is supplied later, the dashboard styling can
+be tuned to match its exact spacing, colours, tile layout and wording.

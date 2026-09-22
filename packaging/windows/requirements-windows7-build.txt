@@ -1,0 +1,6 @@
+# Build-only pins for the Windows 7 SP1 compatible release.
+# Use 32-bit Python 3.8.10 on the build machine.
+PyInstaller==5.13.2
+reportlab==3.6.13
+tkcalendar==1.6.1
+pywin32>=306

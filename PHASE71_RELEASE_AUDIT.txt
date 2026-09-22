@@ -1,0 +1,22 @@
+BKPOS Phase 71 Release Audit
+============================
+
+Targeted regression tests: PASS (17 passed)
+Python compilation: PASS
+Phase 65 production audit: PASS
+Installed BKPOS executable: NOT TOUCHED
+Live BKPOS database: NOT TOUCHED
+
+UI consistency layer added: ui/window_polish.py
+Key operational windows use shared BKPOS presentation polish.
+POS root keeps existing title/geometry and receives shared ttk/theme setup.
+Escape-to-close added to polished child windows.
+Business logic and transaction workflows unchanged.
+
+Release artifact scan before packaging:
+- pos_store.db: excluded
+- *.pyc: excluded
+- __pycache__: excluded
+- logs/diagnostics: excluded
+
+STATUS: PASS

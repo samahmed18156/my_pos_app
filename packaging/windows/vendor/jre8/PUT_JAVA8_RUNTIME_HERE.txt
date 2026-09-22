@@ -1,0 +1,2 @@
+Place a Windows 7 SP1-compatible Java 8 runtime here so that bin\java.exe exists.
+The build script deliberately refuses to create a 'self-contained' release without it.

@@ -1,0 +1,23 @@
+GRN Supplier Credit Note workflow
+
+A CREDIT NOTE button is now available directly on the GRN screen.
+
+Workflow:
+1. Open GRN / Goods Received.
+2. Select an existing supplier with F3.
+3. Click CREDIT NOTE.
+4. The supplier is automatically carried into the Supplier Credit Note screen.
+5. Only stock previously received from that supplier is listed.
+6. Select a stock line and enter the quantity being returned.
+7. Choose the reason: Damaged Stock, General Return, Expired Stock, Incorrect Delivery, or Other.
+8. Credit value is automatically calculated as returned quantity x supplier cost.
+9. Posting the credit note reduces product SOH by the returned quantity.
+10. The calculated value is posted as a supplier credit and reduces the supplier outstanding balance.
+11. The return is linked to the original GRN item so the same received quantity cannot be credited twice.
+
+Example:
+10 units received at R100 each.
+Return 2 damaged units.
+SOH: -2 units.
+Supplier credit: R200.
+Supplier outstanding: -R200.

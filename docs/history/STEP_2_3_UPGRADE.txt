@@ -1,0 +1,24 @@
+STEP 2 + STEP 3 COMPLETED
+
+STEP 2 — QUOTATION TO INVOICE
+- F9 Quotation remains a separate saved quotation workflow.
+- Converting a quotation carries customer ID, customer type, customer number and all quotation lines into a new open invoice.
+- Converted quotations are protected against duplicate conversion.
+- A saved quotation cannot be converted twice.
+- Stock is unchanged by quotation save/conversion; stock changes only at invoice checkout.
+
+STEP 3 — CUSTOMER ACCOUNTS / DEBTORS
+- Customer & Pricing remains the single customer master.
+- Customer Accounts / Balances provides the debtor ledger and customer statements.
+- Customer payments are recorded against the selected customer account.
+- Customer Aging provides 0–30, 31–60, 61–90, 91–120 and 120+ day buckets.
+- F12 Payment now includes CREDIT ACCOUNT.
+- Credit Account requires a selected customer and an active credit limit.
+- Credit sales are posted to the customer ledger in the same database transaction as the sale.
+- Credit-account returns reduce the debtor balance and restore physical stock.
+- sales_history now stores customer linkage for account/reporting purposes.
+- No separate legacy Debtors Maintenance workflow is exposed in the final menu.
+
+IMPORTANT BUSINESS RULE
+- Retail / Bulk / Wholesale pricing remains unchanged.
+- Selling prices remain VAT-inclusive and VAT is calculated at 15/115.

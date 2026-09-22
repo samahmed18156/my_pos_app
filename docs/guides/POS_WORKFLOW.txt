@@ -1,0 +1,19 @@
+POS WORKFLOW — SINGLE SOURCE OF TRUTH
+
+PRODUCTS
+- Product Management is the only menu option for creating and maintaining products.
+- New Product starts with SOH = 0.
+- Category and Supplier are controlled dropdowns.
+- Existing product editing and wholesale/bulk pricing are opened from Product Management.
+- No stock, minimum stock, reorder quantity or unit/packing fields are entered in Product Management.
+
+STOCK
+- GRN is the only workflow that receives supplier stock into SOH.
+- Sales reduce SOH.
+- Returns/Credit Notes restore SOH.
+- Product lookup is read-only and cannot create products.
+
+DUPLICATE WORKFLOWS REMOVED
+- Legacy StockWindow no longer provides Add New Product or stock editing.
+- Product Pricing & Wholesale is no longer a separate top-level menu item.
+- Product Master/Pricing is an internal detail screen opened from Product Management only.

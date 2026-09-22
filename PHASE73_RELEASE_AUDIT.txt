@@ -1,0 +1,10 @@
+BKPOS Phase 73 — Release Identity & Upgrade Safety
+===================================================
+Release identity: BKPOS 10.0.0-rc1
+Executable version metadata: 10.0.0.0
+Per-user install: PrivilegesRequired=lowest
+Installer external-icon references: NONE
+VERSION.txt / RELEASE_VERSION.txt: SYNCHRONIZED
+Live installed executable: NOT TOUCHED
+Live user database: NOT TOUCHED
+Upgrade policy: application files separate from %APPDATA%\\BKPOS live data

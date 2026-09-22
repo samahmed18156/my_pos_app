@@ -1,0 +1,10 @@
+Product Master update
+
+Category and Supplier are now controlled dropdown fields.
+- They cannot be free-typed.
+- Category list comes from existing non-empty product categories.
+- Supplier list comes from existing Supplier accounts and existing product supplier names.
+- The lists refresh when the field is opened/focused.
+- A blank option remains available for products without a category/supplier.
+
+No product data is deleted or changed by this update.

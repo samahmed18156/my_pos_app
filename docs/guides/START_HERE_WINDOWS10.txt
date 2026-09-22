@@ -1,0 +1,44 @@
+BKPOS - WINDOWS 10 / WINDOWS 11
+================================
+
+YOUR CURRENT PC
+---------------
+Your screenshot showed Python 3.13.1 64-bit. That is fine for the
+Windows 10/11 build path.
+
+EASIEST BUILD
+-------------
+1. Extract the whole ZIP.
+2. Open:
+       my_pos_app\packaging\windows\
+3. Double-click:
+       MAKE_BKPOS_INSTALLER.bat
+4. Choose:
+       1  Windows 10 / Windows 11
+5. The script builds BKPOS.exe.
+6. If Inno Setup 6 is installed, it also creates:
+       BKPOS_Setup_Windows10.exe
+7. Double-click the installer.
+8. A BKPOS desktop shortcut is created automatically.
+
+IMPORTANT
+---------
+Do NOT uninstall your current Python 3.13.
+
+WINDOWS 7
+---------
+Choose option 2 in the same launcher. That path remains pinned to the
+older compatibility toolchain.
+
+JASPERVIEWER
+------------
+The Windows 10/11 packaging includes the existing JasperReports assets when
+they are present. A self-contained JasperViewer Java runtime is intentionally
+not fabricated or downloaded by this script. It can be added to the package
+once the exact Java 8/JasperViewer runtime is selected and tested.
+
+USER RIGHTS
+-----------
+The installer uses per-user installation and does not request administrator
+elevation. Normal BKPOS operation stores writable data under the current
+user's AppData.

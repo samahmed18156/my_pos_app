@@ -1,0 +1,15 @@
+F3 LOOKUP STANDARD
+
+Main Invoice:
+- F3 on Barcode/Code or the Product Lookup button = Product Lookup.
+- F3 on Customer Account/Customer Name or Customer Lookup button = Customer Lookup.
+
+Quotation:
+- F3 on customer fields = Customer Lookup.
+- F3 on product field = Product Lookup.
+
+GRN:
+- F3 on supplier fields = Supplier Lookup.
+- F3 on product field = Product Lookup.
+
+Customer selection stores customer_id/customer_type on the current invoice so customer pricing can use the same selected customer.
