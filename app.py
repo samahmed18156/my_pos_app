@@ -171,6 +171,12 @@ from dashboard import install as install_dashboard
 install_dashboard(FamilySupermarketPOS)
 
 
+from ai.ai_hub import install as install_ai_suite
+
+
+install_ai_suite(FamilySupermarketPOS)
+
+
 def main():
 
     """

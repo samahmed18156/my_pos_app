@@ -247,6 +247,8 @@ def install(app_cls):
                  bg="#ffffff",fg="#94a3b8").pack(anchor="w",pady=(3,13))
 
         management=[
+            ("AI Intelligence Suite","Copilot, OCR, Vision & Forecast",
+             lambda:_open(self,"ai.ai_hub","AISuiteWindow")),
             ("Creditors","Supplier accounts",
              lambda:_open(self,"creditor_accounts","SupplierAccountsWindow")),
             ("Reports","Sales & control reports",
@@ -272,7 +274,7 @@ def install(app_cls):
 
         footer=tk.Frame(frame,bg="#f5f7fa",height=30)
         footer.pack(fill="x",padx=24)
-        tk.Label(footer,text="F1 Home   •   F3 Lookup   •   F9 Quotation   •   Ctrl+N New Invoice   •   Ctrl+I Open Invoices   •   F12 Payment",
+        tk.Label(footer,text="F1 Home   •   F3 Lookup   •   F4 Vision Scan   •   F9 Quotation   •   F10 Copilot   •   Ctrl+N New Invoice   •   F12 Payment",
                  font=("Segoe UI",8),bg="#f5f7fa",fg="#94a3b8").pack(anchor="w")
 
         self.bind("<Home>", lambda e:self.show_dashboard())

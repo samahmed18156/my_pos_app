@@ -1,5 +1,12 @@
-Required / recommended Python packages
-
+# BKPOS Core Dependencies
 reportlab>=4.0
-# Optional: enhanced calendar date picker. Reports has a built-in fallback if omitted.
 tkcalendar>=1.6
+
+# AI Intelligence Suite (Optional / Recommended)
+# Note: BKPOS includes robust built-in fallbacks for all AI modules if any package is omitted.
+Pillow>=9.0.0          # High-performance image processing for OCR & Produce Vision
+opencv-python>=4.5.0   # Real-time camera & webcam video feed for checkout scale vision
+scikit-learn>=1.0.0    # Time-series regression forecasting & cashier anomaly detection
+numpy>=1.20.0          # Vector math for vision features and forecasting
+pandas>=1.3.0          # Data manipulation and export
+requests>=2.25.0       # Optional cloud LLM integration (OpenAI, Anthropic, Ollama)
