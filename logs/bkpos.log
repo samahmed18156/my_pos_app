@@ -28,3 +28,15 @@ Traceback (most recent call last):
                              ~~~~~~~~~~~~^^^^^
 sqlite3.OperationalError: no such column: telephone
 2026-09-22 16:35:28,942 INFO BKPOS clean shutdown recorded reason=normal_exit
+2026-09-22 17:32:24,779 INFO BKPOS startup recorded pid=13060
+2026-09-22 17:34:47,394 INFO BKPOS clean shutdown recorded reason=normal_exit
+2026-09-25 11:19:38,994 INFO BKPOS startup recorded pid=3760
+2026-09-25 11:20:07,859 INFO BKPOS clean shutdown recorded reason=normal_exit
+2026-09-25 11:21:20,154 INFO BKPOS startup recorded pid=11608
+2026-09-25 11:22:49,905 WARNING Error loading category share data
+Traceback (most recent call last):
+  File "C:\Users\SERVER\PycharmProjects\my_pos_app\ai\dashboard_charts.py", line 234, in _load_category_data
+    rows = conn.execute(query).fetchall()
+           ~~~~~~~~~~~~^^^^^^^
+sqlite3.OperationalError: no such column: si.department
+2026-09-25 11:22:57,486 INFO BKPOS clean shutdown recorded reason=normal_exit
